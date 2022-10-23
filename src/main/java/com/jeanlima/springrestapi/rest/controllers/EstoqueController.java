@@ -21,55 +21,52 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.jeanlima.springrestapi.model.Produto;
-import com.jeanlima.springrestapi.repository.ProdutoRepository;
+import com.jeanlima.springrestapi.model.Estoque;
+import com.jeanlima.springrestapi.repository.EstoqueRepository;
 
 @RestController
-@RequestMapping("/api/produtos")
-public class ProdutoController {
+@RequestMapping("/api/estoques")
+public class EstoqueController {
 
     @Autowired
-    private ProdutoRepository repository;
+    private EstoqueRepository repository;
 
     @PostMapping
     @ResponseStatus(CREATED)
-    public Produto save(@RequestBody Produto produto) {
-        return repository.save(produto);
+    public Estoque save(@RequestBody Estoque estoque) {
+        return repository.save(estoque);
     }
 
     @PutMapping("{id}")
     @ResponseStatus(NO_CONTENT)
-    public void update(@PathVariable Integer id, @RequestBody Produto produto) {
+    public void update(@PathVariable Integer id, @RequestBody Estoque estoque) {
         repository
                 .findById(id)
-                .map(p -> {
-                    produto.setId(p.getId());
-                    repository.save(produto);
-                    return produto;
+                .map(e -> {
+                    estoque.setId(e.getId());
+                    repository.save(estoque);
+                    return estoque;
                 }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                        "Produto não encontrado."));
+                        "Estoque não encontrado."));
     }
 
     @PatchMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void partialUpdate(@PathVariable Integer id,
-            @RequestBody Produto produto) {
+            @RequestBody Estoque estoque) {
         repository
                 .findById(id)
-                .map(produtoExistente -> {
-                    produto.setId(produtoExistente.getId());
+                .map(estoqueExistente -> {
+                    estoque.setId(estoqueExistente.getId());
 
-                    if (produto.getDescricao() == null) {
-                        produto.setDescricao(produtoExistente.getDescricao());
-                    }
-                    if (produto.getPreco() == null) {
-                        produto.setPreco(produtoExistente.getPreco());
+                    if (estoque.getQuantidade() == null) {
+                        estoque.setQuantidade(estoqueExistente.getQuantidade());
                     }
 
-                    repository.save(produto);
-                    return produtoExistente;
+                    repository.save(estoque);
+                    return estoqueExistente;
                 }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                        "Produto não encontrado"));
+                        "Estoque não encontrado"));
     }
 
     @DeleteMapping("{id}")
@@ -81,26 +78,26 @@ public class ProdutoController {
                     repository.delete(p);
                     return Void.TYPE;
                 }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                        "Produto não encontrado."));
+                        "Estoque não encontrado."));
     }
 
     @GetMapping("{id}")
-    public Produto getById(@PathVariable Integer id) {
+    public Estoque getById(@PathVariable Integer id) {
         return repository
                 .findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                        "Produto não encontrado."));
+                        "Estoque não encontrado."));
     }
 
     @GetMapping
-    public List<Produto> find(Produto filtro) {
+    public List<Estoque> find(Estoque filtro) {
         ExampleMatcher matcher = ExampleMatcher
                 .matching()
                 .withIgnoreCase()
                 .withStringMatcher(
                         ExampleMatcher.StringMatcher.CONTAINING);
 
-        Example<Produto> example = Example.of(filtro, matcher);
+        Example<Estoque> example = Example.of(filtro, matcher);
         return repository.findAll(example);
     }
 }

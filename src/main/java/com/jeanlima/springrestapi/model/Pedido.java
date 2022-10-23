@@ -26,7 +26,6 @@ public class Pedido {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    // Um cliente pode ter muitos pedidos!
     @ManyToOne
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
@@ -34,7 +33,6 @@ public class Pedido {
     @Column
     private LocalDate dataPedido;
 
-    // 1000.00
     @Column(name = "total", precision = 20, scale = 2)
     private BigDecimal total;
 
